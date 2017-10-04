@@ -37,7 +37,7 @@ class Timeline():
             else:
                 if bucket_end >= interval.end: # Invariance: interval.start >= bucket_start
                     # 1. interval lies within a bucket completely
-                    bucket.append(interval.value)
+                    bucket.append(interval)
                     continue
                 elif bucket_end > interval.start:
                     # 2. interval lies within a bucket partially (first part)
