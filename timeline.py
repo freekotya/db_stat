@@ -31,7 +31,7 @@ class Timeline():
                 else:
                     # 3. interval surrounds bucket completely
                     first_part, second_part = interval.split(bucket_start)
-                    second_part, third_part = second_part.split§(bucket_end)
+                    second_part, third_part = second_part.split(bucket_end)
                     bucket.append(second_part)
                     return bucket, [third_part] + intervals[i + 1:]
             else:
