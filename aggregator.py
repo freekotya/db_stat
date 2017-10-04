@@ -64,7 +64,7 @@ class AggregatorFactory():
         elif bucket_type == 'datapoint':
             return PointAverageAggregator()
         else:
-            # default behavious for unknown bucket_type is averaging
+            # default behaviour for unknown bucket_type is averaging
             agg_func = kwargs.get('agg_func', np.average)
             default_agg_func_value = kwargs.get('default_agg_func_value', 0)
             return CustomAggregator(agg_func, default_agg_func_value)
