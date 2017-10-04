@@ -31,7 +31,7 @@ class Timeline():
                 else:
                     # 3. interval surrounds bucket completely
                     first_part, second_part = interval.split(bucket_start)
-                    second_part, third_part = second_part.split(bucket_end)
+                    second_part, third_part = second_part.split§(bucket_end)
                     bucket.append(second_part)
                     return bucket, [third_part] + intervals[i + 1:]
             else:
@@ -42,7 +42,7 @@ class Timeline():
                 elif bucket_end > interval.start:
                     # 2. interval lies within a bucket partially (first part)
                     first_part, second_part = interval.split(bucket_end)
-                    bucket.append(first_part.value)
+                    bucket.append(first_part)
                     return bucket, [second_part] + intervals[i + 1:]
                 else:
                     # 3. interval lies completely after a bucket
