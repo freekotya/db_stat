@@ -50,7 +50,7 @@ class PointAverageAggregator(AggregatorBase):
     def split_average(self, bucket, bucket_size, bucket_start):
         alphas = np.array([point.coord for point in bucket], dtype=np.float)
         values = np.array([point.value for point in bucket], dtype=np.float)
-        alphas = (alphas - bucket_start) / bucket_size
+        alphas = 1.0 - (alphas - bucket_start) / bucket_size
         return alphas, values
 
 
