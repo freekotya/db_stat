@@ -63,7 +63,7 @@ class PointAverageAggregator(AggregatorBase):
                 aggregated.append(current_value)
             else:
                 alphas, values = self.split_average(bucket, bucket_size, bucket_start)
-                print(alphas, values)
+                #print(alphas, values)
                 aggregated.append(current_value + np.mean(alphas * (values - current_value)))
                 current_value = values[-1]
                 del alphas
