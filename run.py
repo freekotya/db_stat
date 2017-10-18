@@ -15,6 +15,8 @@ if __name__ == "__main__":
     df = pd.read_sql_query("SELECT * FROM statistics", cnx)
 
     df_part = df[['bucket_time', 'bucket_size', 'bucket_name', 'bucket_value', 'bucket_type']]
+    df_part = df_part[df_part['bucket_type'] == "datapoint"]
+    #print(df_part.bucket_type.unique())
 
     inputs = []
     for bucket_name, df_bucket_name in df_part.groupby('bucket_name'):
@@ -23,7 +25,7 @@ if __name__ == "__main__":
     bm = BucketsManager()
     bm.process(inputs)
 
-    data = bm.stat(bucket_size=600, start=1506376740, end=1506478920)
+    data = bm.stat(bucket_size=12000, start=1506376740, end=1506478920)
     bucket_names = bm.bucket_names()
 
     grid_width = 4
@@ -37,6 +39,6 @@ if __name__ == "__main__":
     for index, name in enumerate(bucket_names):
         i, j = np.unravel_index(index, dims=grid_shape)
         axarr[i, j].set_title(name)
-        axarr[i, j].plot(data['buckets'], data['values'][name])
+        axarr[i, j].plot(data['buckets'], data['values'][name], marker='o')
     f.subplots_adjust(hspace=0.3, wspace=0.2)
     plt.show()

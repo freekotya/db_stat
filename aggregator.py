@@ -17,33 +17,58 @@ class AggregatorBase():
     @property
     def default_agg_func_value(self):
         return self._default_agg_func_value
-    
+
     @abstractmethod
     def aggregate(self, data):
+        buckets = data["buckets"]
         if len(data) > 0:
-            return [self._agg_func(data_part) if len(data_part) > 0 else self._default_agg_func_value for data_part in data]
+            return [self._agg_func(data_part) if len(data_part) > 0 else self._default_agg_func_value for data_part in buckets]
         else:
             return self._default_agg_func_value
+
 
 class CounterAggregator(AggregatorBase):
     def __init__(self):
         super().__init__()
-        self._agg_func = np.sum
+        self._agg_func = lambda x: np.sum([xx.value for xx in x])
         self._default_agg_func_value = 0
 
 
 class AverageAggregator(AggregatorBase):
     def __init__(self):
         super().__init__()
-        self._agg_func = np.average
+        self._agg_func = lambda x: np.average([xx.value for xx in x])
         self._default_agg_func_value = 0
 
 
 class PointAverageAggregator(AggregatorBase):
     def __init__(self):
         super().__init__()
-        self._agg_func = np.average
+        self._agg_func = lambda x: np.average([xx.value for xx in x])
         self._default_agg_func_value = 0
+
+    def split_average(self, bucket, bucket_size, bucket_start):
+        alphas = np.array([point.coord for point in bucket], dtype=np.float)
+        values = np.array([point.value for point in bucket], dtype=np.float)
+        alphas = (alphas - bucket_start) / bucket_size
+        return alphas, values
+
+
+    def aggregate(self, data):
+        buckets, bucket_size, start = data["buckets"], data["bucket_size"], data["start"]
+        current_value = self._default_agg_func_value
+        aggregated = []
+        for bucket, bucket_start in zip(buckets, range(start, start + bucket_size * len(buckets), bucket_size)):
+            if len(bucket) == 0:
+                aggregated.append(current_value)
+            else:
+                alphas, values = self.split_average(bucket, bucket_size, bucket_start)
+                print(alphas, values)
+                aggregated.append(current_value + np.mean(alphas * (values - current_value)))
+                current_value = values[-1]
+                del alphas
+                del values
+        return aggregated
 
 
 class CustomAggregator(AggregatorBase):

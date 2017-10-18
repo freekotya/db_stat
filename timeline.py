@@ -63,5 +63,4 @@ class Timeline():
         for bucket_start in range(start, end, bucket_size):
             next_bucket, intervals = self.take_next_bucket(intervals, bucket_size, bucket_start)
             buckets.append(next_bucket)
-        
-        return buckets
+        return {"buckets": buckets, "bucket_size": bucket_size, "start": start, "end": end}
